@@ -1,5 +1,5 @@
 import { BookingFormData } from "@/lib/types";
-import { addBooking } from "@/prisma-db";
+import { addBooking, getBookings } from "@/prisma-db";
 import { NextResponse } from "next/server";
 
 export async function POST(request: Request) {
@@ -23,6 +23,16 @@ export async function POST(request: Request) {
   );
 
   return new Response(JSON.stringify(newBooking), {
+    headers: {
+      "Content-Type": "application/json",
+    },
+  });
+}
+
+export async function GET() {
+  const data = await getBookings();
+
+  return new Response(JSON.stringify(data), {
     headers: {
       "Content-Type": "application/json",
     },

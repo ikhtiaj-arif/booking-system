@@ -16,7 +16,7 @@ const BookingDashboard = ({ refreshTrigger }: BookingDashboardProps) => {
 
     const fetchBookings = async () => {
         setLoading(true);
-        const res = await fetch('/bookings/api'); // create this API route
+        const res = await fetch('/api/bookings');
         const data = await res.json();
         setBookings(data);
         setLoading(false);
@@ -25,6 +25,11 @@ const BookingDashboard = ({ refreshTrigger }: BookingDashboardProps) => {
     useEffect(() => {
         fetchBookings();
     }, [refreshTrigger]);
+
+    if (loading)
+        return (
+            <div>Loading..</div>
+        )
 
     return (
         <div>

@@ -48,7 +48,7 @@ const BookingForm = ({ onBookingCreated }: BookingFormProps) => {
         setIsSubmitting(true)
 
         try {
-            const response = await fetch('/add-booking/api', {
+            const response = await fetch('/api/bookings', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(formData)

@@ -1,14 +1,8 @@
+import BookingDashboard from "@/components/BookingDashboard";
 import { getBookings } from "@/prisma-db";
+import { Booking } from "@prisma/client";
 
-interface Booking {
-    id: string;
-    resource: string;
-    startTime: Date;
-    endTime: Date;
-    requestedBy: string;
-    createdAt: Date;
-    updatedAt: Date;
-}
+
 
 export default async function bookingsDB() {
 
@@ -16,7 +10,7 @@ export default async function bookingsDB() {
     console.log(bookingsData);
     return (
         <div>
-            bookings
+            <BookingDashboard bookings={bookingsData} />
         </div>
     )
 }

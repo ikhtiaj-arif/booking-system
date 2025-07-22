@@ -12,7 +12,7 @@ export default function BookingTabs() {
 
     const handleBookingCreated = () => {
         setRefreshTrigger((prev) => prev + 1)
-        setActiveTab("dashboard")
+       
     }
     return (
         <div className="w-full">
@@ -43,7 +43,7 @@ export default function BookingTabs() {
             {activeTab === "book" && (
                 <div className="space-y-6">
                     <div className="">
-                        <BookingForm onBookingCreated={handleBookingCreated} />
+                        <BookingForm onBookingCreated={handleBookingCreated}  />
                     </div>
                 </div>
             )}

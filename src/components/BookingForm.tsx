@@ -3,6 +3,7 @@
 import { BookingFormData, RESOURCES } from '@/lib/types';
 import { validateBookingTime } from '@/lib/utils';
 import React, { useState } from 'react';
+import { toast } from 'sonner';
 import { Alert, AlertDescription } from './ui/alert';
 import { Button } from './ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from './ui/card';
@@ -12,6 +13,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '.
 
 interface BookingFormProps {
     onBookingCreated: () => void
+
 }
 
 
@@ -28,51 +30,64 @@ const BookingForm = ({ onBookingCreated }: BookingFormProps) => {
     const [success, setSuccess] = useState<string | null>(null)
 
 
-    const handleSubmit = async (e: React.FormEvent) => {
-        e.preventDefault()
-        setError(null)
-        setSuccess(null)
 
-        // Validate if the time meets all the requirements or not
-        const timeValidationError = validateBookingTime(formData.startTime, formData.endTime)
+
+    const handleSubmit = async (e: React.FormEvent) => {
+        e.preventDefault();
+        setError(null);
+        setSuccess(null);
+
+        const timeValidationError = validateBookingTime(formData.startTime, formData.endTime);
         if (timeValidationError) {
-            setError(timeValidationError)
-            return
+            setError(timeValidationError);
+            toast.error(timeValidationError);
+            return;
         }
 
         if (!formData.resource || !formData.requestedBy) {
-            setError("Please fill in all fields")
-            return
+            const msg = "Please fill in all fields.";
+            setError(msg);
+            toast.error(msg);
+            return;
         }
 
-        setIsSubmitting(true)
+        setIsSubmitting(true);
 
         try {
-            const response = await fetch('/api/bookings', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(formData)
-            })
+            const response = await fetch("/api/bookings", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(formData),
+            });
+
+            const result = await response.json();
+
             if (!response.ok) {
-                throw new Error("Failed to create booking")
+                setError(result.message);
+                toast.error(result.message);
+                return;
             }
 
-            setSuccess("Booking created successfully!")
+            setSuccess(result.message);
+            toast.success(result.message);
+
             setFormData({
                 resource: "",
                 startTime: "",
                 endTime: "",
                 requestedBy: "",
-            })
-            onBookingCreated()
-
+            });
+            onBookingCreated?.();
 
         } catch (err) {
-            setError(err instanceof Error ? err.message : "An error occurred")
+            const fallbackError = "Something went wrong.";
+            setError(err instanceof Error ? err.message : fallbackError);
+            toast.error(err instanceof Error ? err.message : fallbackError);
         } finally {
-            setIsSubmitting(false)
+            setIsSubmitting(false);
         }
-    }
+    };
+
 
     const handleInputChange = (fieldName: keyof BookingFormData, value: string) => {
         setFormData((data) => ({ ...data, [fieldName]: value }))

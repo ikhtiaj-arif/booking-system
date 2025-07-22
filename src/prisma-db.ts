@@ -1,5 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { PrismaClient } from "@prisma/client";
+import { NextResponse } from "next/server";
 
 const prisma = new PrismaClient();
 
@@ -55,12 +56,47 @@ export const addBooking = async (
   endTime: Date,
   requestedBy: string
 ) => {
-  return await prisma.booking.create({
-    data: {
-      resource,
-      startTime,
-      endTime,
-      requestedBy,
-    },
+  // 1. find existing bookings by resource
+  // 2. convert the start and end date time and remove 10 min from the start time, add 10 min after end time to get the extended buffer time
+  // 3. compare the current start time and end time with the buffered time to find conflicts
+
+  const bufferMinutes = 10;
+  const bufferMs = bufferMinutes * 60 * 1000;
+
+  const existingBookings = await prisma.booking.findMany({
+    where: { resource },
   });
+
+  const hasConflict = existingBookings.some((booking) => {
+    const bookingStart = new Date(booking.startTime);
+    const bookingEnd = new Date(booking.endTime);
+
+    const bufferedStart = new Date(bookingStart.getTime() - bufferMs);
+    const bufferedEnd = new Date(bookingEnd.getTime() + bufferMs);
+
+    return startTime < bufferedEnd && endTime > bufferedStart;
+  });
+
+  if (hasConflict) {
+    return NextResponse.json(
+      {
+        success: false,
+        message:
+          "Your requested slot overlaps with an existing booking or its 10-minute buffer. Please try a different time.",
+      },
+      { status: 409 }
+    );
+  }
+
+  await prisma.booking.create({
+    data: { resource, startTime, endTime, requestedBy },
+  });
+
+  return NextResponse.json(
+    {
+      success: true,
+      message: "Booking created successfully!",
+    },
+    { status: 200 }
+  );
 };

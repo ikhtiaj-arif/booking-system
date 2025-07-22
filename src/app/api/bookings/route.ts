@@ -3,31 +3,23 @@ import { BookingFormData } from "@/lib/types";
 import { addBooking, getBookings } from "@/prisma-db";
 import { NextRequest, NextResponse } from "next/server";
 
-export async function POST(request: Request) {
-  const body: BookingFormData = await request.json();
-
+export async function POST(req: Request) {
+  const body = await req.json();
   const { resource, startTime, endTime, requestedBy } = body;
 
-  // Validate required fields
   if (!resource || !startTime || !endTime || !requestedBy) {
-    return NextResponse.json(
-      { error: "All fields are required" },
+    return Response.json(
+      { success: false, message: "All fields are required." },
       { status: 400 }
     );
   }
 
-  const newBooking = await addBooking(
+  return await addBooking(
     resource,
     new Date(startTime),
     new Date(endTime),
     requestedBy
   );
-
-  return new Response(JSON.stringify(newBooking), {
-    headers: {
-      "Content-Type": "application/json",
-    },
-  });
 }
 
 export async function GET(request: NextRequest) {

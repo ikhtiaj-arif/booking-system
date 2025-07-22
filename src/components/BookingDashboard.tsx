@@ -1,5 +1,6 @@
 
-import { Booking } from '@/lib/types';
+import { BookingWithStatus } from '@/lib/types';
+import { addBookingStatus, groupByResource, sortBookingsByTime } from '@/lib/utils';
 import { useEffect, useState } from 'react';
 import BookingCard from './BookingCard';
 import Filters from './Filters';
@@ -12,7 +13,7 @@ interface BookingDashboardProps {
 
 const BookingDashboard = ({ refreshTrigger }: BookingDashboardProps) => {
 
-    const [bookings, setBookings] = useState<Booking[]>([]);
+    const [bookings, setBookings] = useState<BookingWithStatus[]>([]);
     const [loading, setLoading] = useState(true);
     // api query states
     const [selectedResource, setSelectedResource] = useState("all")
@@ -29,7 +30,10 @@ const BookingDashboard = ({ refreshTrigger }: BookingDashboardProps) => {
 
             const res = await fetch(`/api/bookings?${params}`);
             const data = await res.json();
-            setBookings(data);
+            const bookingsWithStatus = data?.map(addBookingStatus)
+
+            setBookings(sortBookingsByTime(bookingsWithStatus))
+
         } catch (err) {
             console.log(err);
         } finally {
@@ -49,24 +53,7 @@ const BookingDashboard = ({ refreshTrigger }: BookingDashboardProps) => {
 
 
 
-    function groupByResource(bookings: Booking[]) {
-        const grouped: Record<string, Booking[]> = {}
-
-        for (const booking of bookings) {
-            const resource = booking.resource
-
-            if (!grouped[resource]) {
-                grouped[resource] = []
-            }
-
-            grouped[resource].push(booking);
-
-        }
-        return grouped
-
-    }
     const groupedBookings = groupByResource(bookings)
-    console.log("bookings", groupedBookings);
 
     if (loading)
         return (<div>Loading..</div>)

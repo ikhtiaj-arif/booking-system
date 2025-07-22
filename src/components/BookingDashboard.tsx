@@ -7,6 +7,7 @@ import { Card, CardContent } from './ui/card';
 import { Input } from './ui/input';
 import { Label } from './ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from './ui/select';
+import Filters from './Filters';
 
 interface BookingDashboardProps {
     refreshTrigger: number
@@ -62,37 +63,13 @@ const BookingDashboard = ({ refreshTrigger }: BookingDashboardProps) => {
     return (
         <div>
             {/* filters */}
-            <div className="flex flex-wrap gap-4 p-4 bg-gray-50 rounded-lg">
-                <div className="flex-1 min-w-[200px]">
-                    <Label htmlFor="resource-filter">Filter by Resource</Label>
-                    <Select value={selectedResource} onValueChange={setSelectedResource}>
-                        <SelectTrigger>
-                            <SelectValue placeholder="All resources" />
-                        </SelectTrigger>
-                        <SelectContent>
-                            <SelectItem value="all">All resources</SelectItem>
-                            {RESOURCES.map((resource) => (
-                                <SelectItem key={resource} value={resource}>
-                                    {resource}
-                                </SelectItem>
-                            ))}
-                        </SelectContent>
-                    </Select>
-                </div>
-
-                <div className="flex-1 min-w-[200px]">
-                    <Label htmlFor="date-filter">Filter by Date</Label>
-                    <Input id="date-filter" type="date" value={selectedDate} onChange={(e) => setSelectedDate(e.target.value)} />
-                </div>
-
-                <div className="flex items-end">
-                    <Button variant="outline" onClick={handleClearFilters}>
-                        Clear Filters
-                    </Button>
-                </div>
-            </div>
-
-
+            <Filters
+                selectedDate={selectedDate}
+                setSelectedDate={setSelectedDate}
+                selectedResource={selectedResource}
+                setSelectedResource={setSelectedResource}
+                handleClearFilters={handleClearFilters}
+            />
 
             {/* component start */}
             {bookings.length === 0 ? (

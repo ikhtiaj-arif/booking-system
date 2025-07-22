@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { PrismaClient } from "@prisma/client";
 
 const prisma = new PrismaClient();
@@ -33,9 +34,15 @@ const addBookings = async () => {
 
 addBookings();
 
-export async function getBookings() {
-  return await prisma.booking.findMany();
+export async function getBookings(searchQuery: any = {}) {
+  return await prisma.booking.findMany({
+    where: searchQuery,
+    orderBy: {
+      startTime: "asc",
+    },
+  });
 }
+
 export async function getBooking(id: string) {
   return await prisma.booking.findUniqueOrThrow({
     where: { id },

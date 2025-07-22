@@ -2,14 +2,11 @@
 
 import BookingDashboard from "@/components/BookingDashboard";
 import { Button } from "@/components/ui/button";
-import { Booking } from "@/lib/types";
 import { useState } from "react";
 import BookingForm from "./BookingForm";
 
-interface BookingTabsProps {
-    bookings: Booking[];
-}
-export default function BookingTabs({ bookings }: BookingTabsProps) {
+
+export default function BookingTabs() {
     const [refreshTrigger, setRefreshTrigger] = useState(0)
     const [activeTab, setActiveTab] = useState("dashboard");
 

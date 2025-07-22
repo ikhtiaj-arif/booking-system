@@ -3,7 +3,6 @@ import { Booking } from "@/lib/types";
 import { getBookings } from "@/prisma-db";
 
 export default async function Home() {
-  const bookingsData: Booking[] = await getBookings();
 
   return (
     <div className="container mx-auto px-4 py-8 max-w-7xl">
@@ -15,7 +14,7 @@ export default async function Home() {
           Book shared resources with automatic conflict detection and buffer time management
         </p>
       </div>
-      <BookingTabs bookings={bookingsData} />
+      <BookingTabs />
     </div>
   );
 }

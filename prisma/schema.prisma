@@ -10,3 +10,15 @@ datasource db {
   // url      = env("DATABASE_URL")
   url      = "file:app.db"
 }
+
+model Booking {
+  id          String   @id @default(uuid())
+  resource    String
+  startTime   DateTime
+  endTime     DateTime
+  requestedBy String
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@map("bookings")
+}

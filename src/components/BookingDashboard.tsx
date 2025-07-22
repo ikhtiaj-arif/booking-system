@@ -1,14 +1,31 @@
 
 import { Booking } from '@/lib/types';
+import { useEffect, useState } from 'react';
 import BookingCard from './BookingCard';
 import { Card, CardContent } from './ui/card';
 
 interface BookingDashboardProps {
-    bookings: Booking[]
+    refreshTrigger: number
 }
 
 
-const BookingDashboard = ({ bookings }: BookingDashboardProps) => {
+const BookingDashboard = ({ refreshTrigger }: BookingDashboardProps) => {
+
+    const [bookings, setBookings] = useState<Booking[]>([]);
+    const [loading, setLoading] = useState(true);
+
+    const fetchBookings = async () => {
+        setLoading(true);
+        const res = await fetch('/bookings/api'); // create this API route
+        const data = await res.json();
+        setBookings(data);
+        setLoading(false);
+    };
+
+    useEffect(() => {
+        fetchBookings();
+    }, [refreshTrigger]);
+
     return (
         <div>
             {bookings.length === 0 ? (

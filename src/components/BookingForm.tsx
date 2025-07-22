@@ -1,4 +1,7 @@
+'use-client'
+
 import { BookingFormData, RESOURCES } from '@/lib/types';
+import { validateBookingTime } from '@/lib/utils';
 import React, { useState } from 'react';
 import { Alert, AlertDescription } from './ui/alert';
 import { Button } from './ui/button';
@@ -7,7 +10,13 @@ import { Input } from './ui/input';
 import { Label } from './ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from './ui/select';
 
-const BookingForm = () => {
+interface BookingFormProps {
+    onBookingCreated: () => void
+}
+
+
+
+const BookingForm = ({ onBookingCreated }: BookingFormProps) => {
     const [formData, setFormData] = useState<BookingFormData>({
         resource: "",
         startTime: "",
@@ -24,7 +33,12 @@ const BookingForm = () => {
         setError(null)
         setSuccess(null)
 
-        // Client-side validation
+        // Validate if the time meets all the requirements or not
+        const timeValidationError = validateBookingTime(formData.startTime, formData.endTime)
+        if (timeValidationError) {
+            setError(timeValidationError)
+            return
+        }
 
         if (!formData.resource || !formData.requestedBy) {
             setError("Please fill in all fields")
@@ -39,9 +53,18 @@ const BookingForm = () => {
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(formData)
             })
-            if (response.ok) {
-                console.log(response)
+            if (!response.ok) {
+                throw new Error("Failed to create booking")
             }
+
+            setSuccess("Booking created successfully!")
+            setFormData({
+                resource: "",
+                startTime: "",
+                endTime: "",
+                requestedBy: "",
+            })
+            onBookingCreated()
 
 
         } catch (err) {

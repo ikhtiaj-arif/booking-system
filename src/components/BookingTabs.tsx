@@ -9,10 +9,14 @@ import BookingForm from "./BookingForm";
 interface BookingTabsProps {
     bookings: Booking[];
 }
-
 export default function BookingTabs({ bookings }: BookingTabsProps) {
+    const [refreshTrigger, setRefreshTrigger] = useState(0)
     const [activeTab, setActiveTab] = useState("dashboard");
 
+    const handleBookingCreated = () => {
+        setRefreshTrigger((prev) => prev + 1)
+        setActiveTab("dashboard")
+    }
     return (
         <div className="w-full">
             <div className="flex w-full max-w-3xl mx-auto mb-8">
@@ -35,14 +39,14 @@ export default function BookingTabs({ bookings }: BookingTabsProps) {
 
             {activeTab === "dashboard" && (
                 <div className="space-y-6">
-                    <BookingDashboard bookings={bookings} />
+                    <BookingDashboard refreshTrigger={refreshTrigger} />
                 </div>
             )}
 
             {activeTab === "book" && (
                 <div className="space-y-6">
                     <div className="">
-                        <BookingForm />
+                        <BookingForm onBookingCreated={handleBookingCreated} />
                     </div>
                 </div>
             )}

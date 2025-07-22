@@ -41,3 +41,19 @@ export async function getBooking(id: string) {
     where: { id },
   });
 }
+
+export const addBooking = async (
+  resource: string,
+  startTime: Date,
+  endTime: Date,
+  requestedBy: string
+) => {
+  return await prisma.booking.create({
+    data: {
+      resource,
+      startTime,
+      endTime,
+      requestedBy,
+    },
+  });
+};

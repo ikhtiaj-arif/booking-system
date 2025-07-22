@@ -4,6 +4,7 @@ import BookingDashboard from "@/components/BookingDashboard";
 import { Button } from "@/components/ui/button";
 import { Booking } from "@/lib/types";
 import { useState } from "react";
+import BookingForm from "./BookingForm";
 
 interface BookingTabsProps {
     bookings: Booking[];
@@ -40,15 +41,13 @@ export default function BookingTabs({ bookings }: BookingTabsProps) {
 
             {activeTab === "book" && (
                 <div className="space-y-6">
-                    <div className="flex justify-center">Booking Form</div>
+                    <div className="">
+                        <BookingForm />
+                    </div>
                 </div>
             )}
 
-            {activeTab === "test" && (
-                <div className="space-y-6">
-                    <div className="flex justify-center">Test API Response</div>
-                </div>
-            )}
+
         </div>
     );
 }

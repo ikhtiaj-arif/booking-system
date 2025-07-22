@@ -1,13 +1,9 @@
 
-import { Booking, RESOURCES } from '@/lib/types';
+import { Booking } from '@/lib/types';
 import { useEffect, useState } from 'react';
 import BookingCard from './BookingCard';
-import { Button } from './ui/button';
-import { Card, CardContent } from './ui/card';
-import { Input } from './ui/input';
-import { Label } from './ui/label';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from './ui/select';
 import Filters from './Filters';
+import { Card, CardContent, CardHeader, CardTitle } from './ui/card';
 
 interface BookingDashboardProps {
     refreshTrigger: number
@@ -46,8 +42,6 @@ const BookingDashboard = ({ refreshTrigger }: BookingDashboardProps) => {
         fetchBookings();
     }, [refreshTrigger, selectedResource, selectedDate]);
 
-
-
     const handleClearFilters = () => {
         setSelectedResource("all")
         setSelectedDate("")
@@ -55,11 +49,27 @@ const BookingDashboard = ({ refreshTrigger }: BookingDashboardProps) => {
 
 
 
-    if (loading)
-        return (
-            <div>Loading..</div>
-        )
+    function groupByResource(bookings: Booking[]) {
+        const grouped: Record<string, Booking[]> = {}
 
+        for (const booking of bookings) {
+            const resource = booking.resource
+
+            if (!grouped[resource]) {
+                grouped[resource] = []
+            }
+
+            grouped[resource].push(booking);
+
+        }
+        return grouped
+
+    }
+    const groupedBookings = groupByResource(bookings)
+    console.log("bookings", groupedBookings);
+
+    if (loading)
+        return (<div>Loading..</div>)
     return (
         <div>
             {/* filters */}
@@ -80,13 +90,25 @@ const BookingDashboard = ({ refreshTrigger }: BookingDashboardProps) => {
                 </Card>
             ) : (
                 <div className="space-y-6">
-                    <CardContent>
-                        <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-                            {bookings.map((booking) => (
-                                <BookingCard key={booking.id} booking={booking} />
-                            ))}
-                        </div>
-                    </CardContent>
+                    {Object.entries(groupedBookings).map(([resource, resourceBookings]) => (
+                        <Card key={resource}>
+                            <CardHeader>
+                                <CardTitle className="flex items-center justify-between">
+                                    {resource}
+                                    <span className="text-sm font-normal text-gray-500">
+                                        {resourceBookings.length} booking{resourceBookings.length !== 1 ? "s" : ""}
+                                    </span>
+                                </CardTitle>
+                            </CardHeader>
+                            <CardContent>
+                                <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+                                    {resourceBookings.map((booking) => (
+                                        <BookingCard key={booking.id} booking={booking} />
+                                    ))}
+                                </div>
+                            </CardContent>
+                        </Card>
+                    ))}
                 </div>
             )}
         </div>

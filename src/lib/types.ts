@@ -15,6 +15,10 @@ export interface BookingFormData {
   requestedBy: string;
 }
 
+export interface BookingWithStatus extends Booking {
+  status: "upcoming" | "ongoing" | "past";
+}
+
 export const RESOURCES = [
   "Conference Room A",
   "Conference Room B",

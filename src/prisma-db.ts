@@ -50,12 +50,12 @@ export async function getBooking(id: string) {
   });
 }
 
-export const addBooking = async (
+export async function addBooking(
   resource: string,
   startTime: Date,
   endTime: Date,
   requestedBy: string
-) => {
+) {
   // 1. find existing bookings by resource
   // 2. convert the start and end date time and remove 10 min from the start time, add 10 min after end time to get the extended buffer time
   // 3. compare the current start time and end time with the buffered time to find conflicts
@@ -99,4 +99,10 @@ export const addBooking = async (
     },
     { status: 200 }
   );
-};
+}
+
+export async function deleteBooking(id: string) {
+  return await prisma.booking.delete({
+    where: { id },
+  });
+}

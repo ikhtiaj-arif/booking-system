@@ -1,11 +1,13 @@
 
 import { BookingWithStatus } from '@/lib/types';
 import { addBookingStatus, groupByResource, sortBookingsByTime } from '@/lib/utils';
-import { useEffect, useState } from 'react';
-import BookingCard from './BookingCard';
+import { lazy, Suspense, useEffect, useState } from 'react';
+// import BookingCard from './BookingCard';
+import { BookingCardSkeleton } from './BookingsSkeleton';
 import Filters from './Filters';
 import { Card, CardContent, CardHeader, CardTitle } from './ui/card';
 
+const BookingCard = lazy(() => import("./BookingCard"))
 interface BookingDashboardProps {
     refreshTrigger: number
 }
@@ -55,8 +57,14 @@ const BookingDashboard = ({ refreshTrigger }: BookingDashboardProps) => {
 
     const groupedBookings = groupByResource(bookings)
 
-    if (loading)
-        return (<div>Loading..</div>)
+    if (loading) {
+        return (<>
+            <BookingCardSkeleton />
+            <BookingCardSkeleton />
+            <BookingCardSkeleton />
+        </>
+        )
+    }
     return (
         <div>
             {/* filters */}
@@ -90,7 +98,9 @@ const BookingDashboard = ({ refreshTrigger }: BookingDashboardProps) => {
                             <CardContent>
                                 <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
                                     {resourceBookings.map((booking) => (
-                                        <BookingCard key={booking.id} booking={booking} />
+                                        <Suspense key={booking.id} fallback={<BookingCardSkeleton />}>
+                                            <BookingCard booking={booking} fetchBookings={fetchBookings} />
+                                        </Suspense>
                                     ))}
                                 </div>
                             </CardContent>

@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { BookingFormData } from "@/lib/types";
-import { addBooking, getBookings } from "@/prisma-db";
+import { addBooking, deleteBooking, getBookings } from "@/prisma-db";
 import { NextRequest, NextResponse } from "next/server";
 
 export async function POST(req: Request) {
@@ -61,4 +61,35 @@ export async function GET(request: NextRequest) {
       "Content-Type": "application/json",
     },
   });
+}
+
+export async function DELETE(request: NextRequest) {
+  try {
+    const { searchParams } = new URL(request.url);
+    const id = searchParams.get("id");
+
+    if (!id) {
+      return NextResponse.json(
+        { error: "Booking ID is required" },
+        { status: 400 }
+      );
+    }
+
+    await deleteBooking(id);
+
+    return NextResponse.json(
+      { message: "Booking deleted successfully." },
+      { status: 200 }
+    );
+  } catch (error) {
+    return NextResponse.json(
+      {
+        error:
+          error instanceof Error
+            ? error.message
+            : "An error occurred while deleting the booking.",
+      },
+      { status: 500 }
+    );
+  }
 }

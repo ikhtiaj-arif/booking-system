@@ -20,7 +20,7 @@ const Filters = ({ selectedResource,
     setSelectedDate,
     handleClearFilters }: FiltersProps) => {
     return (
-        <div className="flex flex-wrap gap-4 p-4 bg-gray-50 rounded-lg">
+        <div className="flex flex-wrap gap-4 p-4 bg-gray-50 px-12 rounded-lg mb-4">
             <div className="flex-1 min-w-[200px]">
                 <Label htmlFor="resource-filter">Filter by Resource</Label>
                 <Select value={selectedResource} onValueChange={setSelectedResource}>

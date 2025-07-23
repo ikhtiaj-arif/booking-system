@@ -58,7 +58,8 @@ export async function addBooking(
 ) {
   // 1. find existing bookings by resource
   // 2. convert the start and end date time and remove 10 min from the start time, add 10 min after end time to get the extended buffer time
-  // 3. compare the current start time and end time with the buffered time to find conflicts
+  // 3. Use array.some to find the first conflict, as some returns true and stops the loop when the condition matches
+  // 4. compare the current start time and end time with the buffered time to find conflicts
 
   const bufferMinutes = 10;
   const bufferMs = bufferMinutes * 60 * 1000;
@@ -68,7 +69,6 @@ export async function addBooking(
   });
 
   const hasConflict = existingBookings.some((booking) => {
-
     const bookingStart = new Date(booking.startTime);
     const bookingEnd = new Date(booking.endTime);
 

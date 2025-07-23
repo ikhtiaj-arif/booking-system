@@ -97,6 +97,7 @@ const BookingForm = ({ onBookingCreated }: BookingFormProps) => {
 
     return (
         <div>
+
             <Card className="w-full max-w-md mx-auto">
                 <CardHeader>
                     <CardTitle>Book a Resource</CardTitle>

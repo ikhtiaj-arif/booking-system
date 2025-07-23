@@ -1,6 +1,4 @@
 import BookingTabs from "@/components/BookingTabs";
-import { Booking } from "@/lib/types";
-import { getBookings } from "@/prisma-db";
 
 export default async function Home() {
 

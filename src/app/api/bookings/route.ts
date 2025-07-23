@@ -1,5 +1,4 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { BookingFormData } from "@/lib/types";
 import { addBooking, deleteBooking, getBookings } from "@/prisma-db";
 import { NextRequest, NextResponse } from "next/server";
 

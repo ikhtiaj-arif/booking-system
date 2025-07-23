@@ -46,6 +46,7 @@ const BookingDashboard = ({ refreshTrigger }: BookingDashboardProps) => {
 
     useEffect(() => {
         fetchBookings();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [refreshTrigger, selectedResource, selectedDate]);
 
     const handleClearFilters = () => {

@@ -220,6 +220,40 @@ prisma/
 
 ---
 
+## ☁️ Deploying to Vercel
+
+> **Important:** SQLite is a file-based database and does not work on Vercel (serverless/ephemeral filesystem). You need a hosted PostgreSQL database.
+
+### Recommended: Neon (free serverless Postgres)
+
+1. Create a free database at [neon.tech](https://neon.tech)
+2. Copy the **connection string** from the Neon dashboard
+
+### Steps
+
+```bash
+# 1. Push your code to GitHub
+git push origin main
+
+# 2. Import the repo at vercel.com/new
+
+# 3. Set environment variable in Vercel dashboard:
+#    Settings → Environment Variables
+#    DATABASE_URL = postgresql://...your-neon-url...
+
+# 4. Vercel auto-runs `npm run build` which calls:
+#    prisma generate && next build
+#    postinstall: prisma migrate deploy
+```
+
+### Environment Variables (Vercel Dashboard)
+
+| Variable | Value |
+|---|---|
+| `DATABASE_URL` | Your Neon/Postgres connection string |
+
+---
+
 ## 📄 License
 
 MIT — feel free to use, fork, and adapt.
